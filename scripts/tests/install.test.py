@@ -41,7 +41,7 @@ class InstallerTests(unittest.TestCase):
             source_private.mkdir(parents=True)
             (source_private / "do-not-copy.txt").write_text("private", encoding="utf8")
         result = installer.install(target)
-        self.assertEqual(result, destination)
+        self.assertEqual(result, destination.resolve())
         self.assertEqual((destination / "scripts/example.mjs").read_text(), "updated")
         for directory in ("data", "scripts/node_modules"):
             self.assertEqual((destination / directory / "keep.txt").read_text(), "keep")

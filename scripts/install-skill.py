@@ -45,18 +45,19 @@ def tree_files(src: Path):
             yield Path(directory) / name
 
 def install(target: Path):
+    source_root = ROOT.resolve()
     target = target.expanduser().resolve()
     dest = target / "baileys-skill"
     resolved = dest.resolve()
-    if dest.is_symlink() or resolved.is_relative_to(ROOT) or ROOT.is_relative_to(resolved):
+    if dest.is_symlink() or resolved.is_relative_to(source_root) or source_root.is_relative_to(resolved):
         raise ValueError("Install destination must be separate from the source and cannot be a symbolic link.")
-    files = [ROOT / name for name in ROUTER_FILES if (ROOT / name).is_file()]
+    files = [source_root / name for name in ROUTER_FILES if (source_root / name).is_file()]
     for name in ROUTER_DIRS + ["skills"]:
-        if (ROOT / name).is_dir():
-            files.extend(tree_files(ROOT / name))
+        if (source_root / name).is_dir():
+            files.extend(tree_files(source_root / name))
     # Validate every output before copying. Existing links must not redirect writes.
     for source in files:
-        output = dest / source.relative_to(ROOT)
+        output = dest / source.relative_to(source_root)
         if source.is_symlink() or not output.resolve().is_relative_to(resolved):
             raise ValueError(f"Refusing symbolic link or escaped destination: {output}")
         for ancestor in [output, *output.parents]:
@@ -65,7 +66,7 @@ def install(target: Path):
             if ancestor.is_symlink():
                 raise ValueError(f"Refusing destination symbolic link: {ancestor}")
     for source in files:
-        output = dest / source.relative_to(ROOT)
+        output = dest / source.relative_to(source_root)
         output.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, output)
     # Upgrades overwrite only bundled files; local data and installed dependencies survive.
