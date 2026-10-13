@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible problem without private WhatsApp data.
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: OS and Bun version
+      placeholder: Windows 11, Bun 1.4.2
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Command and steps
+      description: Replace phone numbers, message IDs and personal text with placeholders. Never attach data/ or creds.json.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected behavior and actual error
+      description: Include the exit code. Remove private metadata from logs; avoid --verbose logs unless you have reviewed them.
+    validations:
+      required: true

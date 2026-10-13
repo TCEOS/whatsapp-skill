@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  offline-checks:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.2'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install locked dependencies
+        working-directory: scripts
+        run: bun install --frozen-lockfile
+      - name: Test offline behavior
+        run: bun test scripts/tests
+      - name: Validate skills and publication contents
+        run: |
+          python scripts/verify-skill.py
+          python scripts/check-publication.py
+          python scripts/tests/install.test.py
+      - name: Run synthetic demo
+        run: bun assets/demo.mjs

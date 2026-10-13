@@ -1,0 +1,14 @@
+{
+	"name": "baileys-skill-scripts",
+	"private": true,
+	"version": "0.1.0",
+	"description": "Runtime dependencies for the baileys-skill Agent Skill scripts (direct Baileys, no HTTP, no server)",
+	"type": "module",
+	"dependencies": {
+		"baileys": "7.0.0-rc14",
+		"pino": "9.14.0"
+	},
+	"engines": {
+		"bun": ">=1.0.0"
+	}
+}

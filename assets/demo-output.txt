@@ -1,0 +1,9 @@
+Synthetic messages; no WhatsApp connection.
+1. Inspect counts without printing message bodies
+{"count":4,"fromMe":1,"oldest":"2025-12-31T23:55:00.000Z","newest":"2026-01-01T00:10:00.000Z","characters":566}
+2. Search the cache and print compact rows
+{"columns":["epochSeconds","sender","text","id"],"senders":{"0":"Alex","1":"me"},"messages":[[1767226200,0,"The deadline is Friday at 17:00 UTC.","demo-004"],[1767225900,1,"I will send the draft before the deadline.","demo-003"]]}
+3. Retrieve the complete text of one selected message
+{"messages":[{"id":"demo-001","fromMe":false,"sender":"demo-chat","pushName":"Alex","timestamp":"2025-12-31T23:55:00.000Z","type":"conversation","text":"The draft needs a summary, setup commands, and a note about the history cache. This fixture is invented for the offline demo. This fixture is invented for the offline demo. This fixture is invented for the offline demo. This fixture is invented for the offline demo. This fixture is invented for the offline demo. This fixture is invented for the offline demo. This fixture is invented for the offline demo. This fixture is invented for the offline demo. "}]}
+Character counts for this fixture only; these are not token counts:
+{"verbose":1142,"compact":527}
