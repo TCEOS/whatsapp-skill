@@ -1,15 +1,6 @@
----
-name: baileys-messages
-description: Send WhatsApp text, images, video, documents, audio, view-once via script. Use when the user says enviar mensaje, mandar foto, video, documento, audio, ver una vez, or needs to send anything with a paired session.
-license: MIT
-metadata:
-  author: baileys-skill
-  version: "3.0"
----
+# WhatsApp Messages
 
-# Baileys Messages
-
-Session must be paired first (`skills/baileys-pairing/SKILL.md`).
+Session must be paired first (`references/pairing.md`).
 `--to` accepts digits (`15555550101` → `@s.whatsapp.net`) or a full JID
 (`...@s.whatsapp.net`, `...@g.us`, `...@lid`).
 

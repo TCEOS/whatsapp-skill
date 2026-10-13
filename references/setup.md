@@ -1,4 +1,4 @@
-# Setup — baileys-skill skill (scripts only)
+# Setup — whatsapp-skill skill (scripts only)
 
 No server. No HTTP. No database. No Docker. No PostgreSQL.
 
@@ -26,7 +26,6 @@ and audio (`--audio`) also need **ffmpeg** on PATH (Windows: `winget install ffm
 ```
 <skill-dir>/
   SKILL.md            router (this skill)
-  skills/<name>/      sub-skills, each with its own SKILL.md
   scripts/            executables: pair, send, groups, contacts, status (+ lib/)
   scripts/lib/        shared session/args helpers (not run directly)
   references/         on-demand docs
@@ -48,12 +47,12 @@ Linux/macOS: `bash scripts/check-prereqs.sh`
 
 | Agent | Project path | User path |
 |---|---|---|
-| Codex | `.agents/skills/baileys-skill/` | `~/.codex/skills/baileys-skill/` |
-| Standard | `.agents/skills/baileys-skill/` | `~/.agents/skills/baileys-skill/` |
-| Claude Code | `.claude/skills/baileys-skill/` | `~/.claude/skills/baileys-skill/` |
-| Cursor | `.cursor/skills/baileys-skill/` | `~/.cursor/skills/baileys-skill/` |
-| Copilot / VS Code | `.github/skills/baileys-skill/` | `~/.copilot/skills/baileys-skill/` |
-| OpenCode / Gemini | `.agents/skills/baileys-skill/` | `~/.agents/skills/baileys-skill/` |
+| Codex | `.agents/skills/whatsapp-skill/` | `~/.codex/skills/whatsapp-skill/` |
+| Standard | `.agents/skills/whatsapp-skill/` | `~/.agents/skills/whatsapp-skill/` |
+| Claude Code | `.claude/skills/whatsapp-skill/` | `~/.claude/skills/whatsapp-skill/` |
+| Cursor | `.cursor/skills/whatsapp-skill/` | `~/.cursor/skills/whatsapp-skill/` |
+| Copilot / VS Code | `.github/skills/whatsapp-skill/` | `~/.copilot/skills/whatsapp-skill/` |
+| OpenCode / Gemini | `.agents/skills/whatsapp-skill/` | `~/.agents/skills/whatsapp-skill/` |
 
 ```bash
 python scripts/install-skill.py --target .agents/skills
@@ -71,7 +70,7 @@ python scripts/install-skill.py --target .agents/skills
 To use an existing local skill with its current dependencies and sessions, link the directory into the Codex user's skill folder (do not copy auth data into a separate installation):
 
 ```powershell
-New-Item -ItemType Junction -Path "$env:USERPROFILE\.codex\skills\baileys-skill" -Target '<absolute-skill-directory>'
+New-Item -ItemType Junction -Path "$env:USERPROFILE\.codex\skills\whatsapp-skill" -Target '<absolute-skill-directory>'
 ```
 
-Run scripts from that linked skill root. The source directory must remain available; edits are shared. The root `SKILL.md` routes into bundled `skills/` references. No separate dependency install or phone pairing is needed for a linked installation.
+Run scripts from that linked skill root. The source directory must remain available; edits are shared. The only `SKILL.md` routes to plain documents in `references/`. No separate dependency install or phone pairing is needed for a linked installation. Rename an older `baileys-skill` directory link to `whatsapp-skill` without changing its target.

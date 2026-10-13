@@ -1,113 +1,66 @@
 ---
-name: baileys-skill
-description: Drive WhatsApp with local Bun scripts (read cached and on-demand history, pair by code, send text/media, groups, contacts, sessions). Use when the user mentions WhatsApp, Baileys, leer mensajes, historial, vincular, sincronizar, pairing code, codigo de vinculacion, enviar mensaje, grupos, or works with baileys-skill. No server, no HTTP, no MCP protocol.
+name: whatsapp-skill
+description: Read, search and send WhatsApp messages; link accounts and manage groups, contacts and sessions through local Bun scripts. Use for WhatsApp conversations, history, media, pairing codes and chat management.
 license: MIT
 metadata:
-  runtime: Bun >=1.0 with script dependencies installed; WhatsApp network access for live operations
-  author: baileys-skill
-  version: "3.2"
-  spec: agentskills.io
+  author: TCEOS
+  version: "0.2.0"
+  runtime: Bun with script dependencies installed; WhatsApp network access for live operations; Python for installation and validation
 ---
 
-# WhatsApp Agent Skill
+# WhatsApp Skill
 
-This Agent Skill combines `SKILL.md` instructions and executable Bun scripts
-that connect to WhatsApp through Baileys. It does not implement MCP.
-The public repository is `TCEOS/whatsapp-skill`; the installed skill name is
-`baileys-skill` for compatibility with existing installations.
+This is the only skill entrypoint. Choose the operation below and read its linked
+document as ordinary reference material. Load only what the request needs.
+Baileys supplies the WhatsApp connection; this skill runs local Bun scripts.
 
-Sessions are local folders (`data/<session>/` with `creds.json` + keys).
-Nothing listens on any port. No database, no Docker, no PostgreSQL.
+## Choose the operation
 
-## 1. What you must install (do this first)
-
-1. **Bun >= 1.0** — check `bun --version` (https://bun.sh).
-2. **Script dependencies** (once):
-   ```bash
-   cd <skill-dir>/scripts && bun install
-   ```
-
-That is all. Detail: `skills/baileys-setup/SKILL.md` + `references/setup.md`.
-
-## 2. Mandatory sync flow — phone number first, then code
-
-NEVER invent a phone number or a pairing code. Always in this order:
-
-1. **Ask the user for the phone number.** Country code + digits, no `+`,
-   no spaces (e.g. `15555550101`). Do not continue without it.
-2. **Run the pairing script with that number:**
-   ```bash
-   bun scripts/pair.mjs --phone 15555550101 --session ventas
-   ```
-3. **Show the printed 8-char code to the user** with the link steps from
-   `assets/user-link-steps.md`, and wait for authenticated initialization. Then ask whether the phone left `Logging in...`; saved credentials alone never prove success.
-
-Normative detail: `skills/baileys-pairing/SKILL.md` + `references/pairing.md`.
-There is no QR flow: code only.
-
-## 3. Everyday operations (fragments)
-
-```bash
-# Stored credentials (offline; does not verify completed login)
-bun scripts/status.mjs
-
-# Read messages or find an already cached chat (does not mark it read)
-bun scripts/history.mjs --session personal --chats --search "Example Contact"
-bun scripts/history.mjs --session personal --to <jid> --limit 20
-bun scripts/history.mjs --session personal --to <jid> --cached --cursor <nextCursor>
-
-# Send text / media (session must be paired)
-bun scripts/send.mjs --session ventas --to 15555550101 --text "Hola!"
-bun scripts/send.mjs --session ventas --to 15555550101 --image ./foto.jpg --caption "Mira"
-
-# Groups and contacts (session must be paired)
-bun scripts/groups.mjs --session ventas list
-bun scripts/groups.mjs --session ventas create --subject "Equipo" --participants 15555550102,15555550103
-bun scripts/contacts.mjs --session ventas check --jid 15555550101
-
-# React to a message
-bun scripts/react.mjs --session ventas --to 15555550101 --id <message-id> --emoji "❤️"
-
-# Delete a message for everyone
-bun scripts/delete.mjs --session ventas --to 15555550101 --id <message-id>
-```
-
-Every script supports `--help` and validates its arguments without network.
-Full usage per script: `references/scripts-reference.md`.
-
-## 4. Which sub-skill to read
-
-| Task | Read |
+| Request | Read |
 |---|---|
-| Install Bun + script dependencies, verify | `skills/baileys-setup/SKILL.md` |
-| Link/pair a number (number-first code flow) | `skills/baileys-pairing/SKILL.md` |
-| Send text, images, documents, audio | `skills/baileys-messages/SKILL.md` |
-| List/create/info of groups | `skills/baileys-groups/SKILL.md` |
-| Check numbers, profile photos | `skills/baileys-contacts/SKILL.md` |
-| Archive, pin, mute, read, star, clear chats | `skills/baileys-chats/SKILL.md` |
-| Read conversation messages, history, pagination, zero-message diagnosis | `references/scripts-reference.md` (history section) |
-| Local sessions: list, state, re-pair, delete | `skills/baileys-admin/SKILL.md` |
-| Business catalog, products, orders (needs WhatsApp Business) | `skills/baileys-admin/SKILL.md` (business section) |
+| Install Bun, dependencies or the skill; troubleshoot setup | [references/setup.md](references/setup.md) |
+| Link an account, use a pairing code, recover a stuck login | [references/pairing.md](references/pairing.md) |
+| Read or search conversations, use history filters and pagination | [references/scripts-reference.md](references/scripts-reference.md#historymjs--read-conversation-messages) |
+| Send text or media; edit, react, poll or delete a message | [references/messages.md](references/messages.md) |
+| List, inspect or manage groups | [references/groups.md](references/groups.md) |
+| Verify a number or obtain a profile photo | [references/contacts.md](references/contacts.md) |
+| Archive, pin, mute, mark read, star or label a chat | [references/chats.md](references/chats.md) |
+| Inspect, recover or remove sessions; Business catalog operations | [references/sessions.md](references/sessions.md) |
 
-## 5. Rules for agents
+Exact arguments and exit codes: [references/scripts-reference.md](references/scripts-reference.md).
+Each script also supports `--help` without a live session.
 
-- Progressive disclosure: this file routes; load one sub-skill per task; load `references/*` on demand.
-- Run the bundled scripts; do not reimplement Baileys calls inline.
-- Never commit `data/` (session credentials). It is git-ignored.
-- History is cached from Baileys events in `data/<session>/history/`, with full text and message keys. Attach listeners before the connection opens, including during pairing.
-- An empty cache or request timeout is not an empty conversation. Never use invented message IDs, call it end of history, or claim a reading task is done without actual messages. For a session whose initial sync was discarded, use a verified real anchor as documented in the history reference; do not reset or re-pair implicitly.
-- Minimize tokens for history: start with `--stats`, then use `--cached --search` or date filters and small pages. Default output is compact with 240-character previews; use `--max-text 0` only for relevant messages. Bulk output auto-exports above 12,000 characters, or use `--output-file`; do not dump thousands of full messages into context.
-- Exit codes: `0` ok, `1` bad arguments, `2` connection/operation failed, `3` session not paired.
-- Validate this skill with `python scripts/verify-skill.py` after edits.
+## Run scripts
 
-## 6. Install this skill in any agent (universal)
+Run from this skill's directory. Install dependencies once with
+`bun install --frozen-lockfile` inside `scripts/`, then return to the skill root.
 
-Follows https://agentskills.io/specification (Claude Code, Cursor, Copilot,
-Windsurf, OpenCode, Codex CLI, Gemini CLI, any compatible reader).
-
-```bash
-python scripts/install-skill.py --target .agents/skills
+```sh
+bun scripts/status.mjs
+bun scripts/history.mjs --session personal --chats --search "Project group"
+bun scripts/history.mjs --session personal --to <jid> --stats
+bun scripts/history.mjs --session personal --to <jid> --cached --search "deadline"
 ```
 
-It installs this router plus every `skills/*` sub-skill (scripts included).
-After installing, run `bun install` inside the installed `scripts/` once.
+For a new pairing, use the phone number supplied by the user, or ask for it first.
+Never invent a number or code. Read the pairing guide before running
+`bun scripts/pair.mjs --phone <digits> --session <name>`. Stored credentials alone
+do not prove that phone-side login finished. Reuse a working session rather than
+resetting or linking it again.
+
+## History and local data
+
+- Start with `--stats`, then filter cached messages and read small pages. Output is compact with 240-character previews. Use `--max-text 0` for relevant full messages; bulk results export above 12,000 characters or with `--output-file`.
+- Empty caches and timeouts do not establish an empty conversation or the end of history. Older requests need real message keys. Claim a reading task is complete only after actual messages are obtained.
+- One live command per session. Initial history and incoming messages are cached before the connection opens; the cache is not a complete phone backup.
+- Credentials and caches live under `data/<session>/`, or the configured `--data-dir` / `BAILEYS_DATA_DIR`. Keep this plaintext data local and out of commits, issue reports and shared exports. Selected output may reach the agent's model provider.
+
+## Install and validate
+
+`python scripts/install-skill.py --target .agents/skills` installs one directory,
+`whatsapp-skill/`, with this central `SKILL.md` and plain reference documents.
+An existing `baileys-skill/` installation is migrated without discarding its
+sessions or dependencies. Linked installations need their directory link renamed.
+
+After changes, run `python scripts/verify-skill.py`. See the setup guide for host
+discovery paths and installation details.

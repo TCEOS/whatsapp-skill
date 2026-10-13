@@ -88,7 +88,9 @@ For an agent that reads the Agent Skills format:
 python scripts/install-skill.py --target .agents/skills
 ```
 
-The installed skill is currently named `baileys-skill`, under `.agents/skills/baileys-skill/`. Run `bun install --frozen-lockfile` inside its `scripts/` directory. Point your agent at the installed [SKILL.md](SKILL.md); it routes to the instructions for each operation. Host support varies, so check your agent's skill discovery rules.
+The installed skill is named `whatsapp-skill`, under `.agents/skills/whatsapp-skill/`. There is one [SKILL.md](SKILL.md) entrypoint; it selects plain documents in `references/` for each operation. Run `bun install --frozen-lockfile` inside its `scripts/` directory. Host support varies, so check your agent's skill discovery rules.
+
+When upgrading a regular `baileys-skill/` installation, the installer renames it to `whatsapp-skill/`, preserves its sessions and dependencies, and removes the former bundled sub-skill entrypoints. If you installed through a directory link, rename that link to `whatsapp-skill` while keeping its target. When both installation names exist, the installer stops so sessions are not silently merged or overwritten.
 
 ## How it works
 

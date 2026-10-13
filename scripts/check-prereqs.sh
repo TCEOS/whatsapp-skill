@@ -9,7 +9,7 @@ command -v bun >/dev/null 2>&1 && ok "bun $(bun --version)" || warn "Bun >=1.0 (
 command -v python3 >/dev/null 2>&1 && ok "python3 (for verify/install helpers)" || echo "INFO: python3 not found (optional)"
 
 [ -f "SKILL.md" ] && ok "SKILL.md exists" || warn "SKILL.md missing"
-[ -d "skills" ] && ok "skills/ exists ($(ls skills | wc -l | tr -d ' ') sub-skills)" || warn "skills/ missing"
+[ -f "references/messages.md" ] && ok "operation reference documents exist" || warn "operation reference documents missing"
 [ -d "scripts" ] && ok "scripts/ exists" || warn "scripts/ missing"
 [ -f "scripts/package.json" ] && ok "scripts/package.json exists" || warn "scripts/package.json missing"
 [ -d "scripts/node_modules" ] && ok "scripts dependencies installed" || warn "run: cd scripts && bun install"

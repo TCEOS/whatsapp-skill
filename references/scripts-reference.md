@@ -1,4 +1,4 @@
-# Scripts reference — baileys-skill
+# Scripts reference — whatsapp-skill
 
 All scripts run with Bun from the skill root (or installed copy root).
 Notation: `bun scripts/<name>.mjs ...`. Every script accepts `--help` and

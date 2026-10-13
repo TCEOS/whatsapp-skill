@@ -12,7 +12,7 @@ try { $v = (python --version) 2>$null; if ($v) { Ok "$v (for verify/install help
 catch { Info "python not found (optional)" }
 
 if (Test-Path "SKILL.md") { Ok "SKILL.md exists" } else { Missing "SKILL.md missing" }
-if (Test-Path "skills") { Ok "skills/ exists ($((Get-ChildItem skills -Directory).Count) sub-skills)" } else { Missing "skills/ missing" }
+if (Test-Path "references/messages.md") { Ok "operation reference documents exist" } else { Missing "operation reference documents missing" }
 if (Test-Path "scripts") { Ok "scripts/ exists" } else { Missing "scripts/ missing" }
 if (Test-Path "scripts/package.json") { Ok "scripts/package.json exists" } else { Missing "scripts/package.json missing" }
 if (Test-Path "scripts/node_modules") { Ok "scripts dependencies installed" } else { Missing "run: cd scripts; bun install" }

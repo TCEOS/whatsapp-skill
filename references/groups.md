@@ -1,15 +1,6 @@
----
-name: baileys-groups
-description: List, inspect and create WhatsApp groups via script. Use when the user mentions grupos, crear grupo, group info, or needs group management with a paired session.
-license: MIT
-metadata:
-  author: baileys-skill
-  version: "3.0"
----
+# WhatsApp Groups
 
-# Baileys Groups
-
-Session must be paired first (`skills/baileys-pairing/SKILL.md`).
+Session must be paired first (`references/pairing.md`).
 
 ## Fragments
 

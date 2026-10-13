@@ -1,15 +1,6 @@
----
-name: baileys-chats
-description: Read WhatsApp conversation messages and organize chats and labels via script (history, archive, pin, mute, read, unread, star, clear, delete, labels). Use when the user says leer mensajes, historial, conversacion, archivar, fijar, silenciar, marcar leido, destacar, borrar chat, etiqueta, label, or needs chat management with a paired session.
-license: MIT
-metadata:
-  author: baileys-skill
-  version: "3.0"
----
+# WhatsApp Chats
 
-# Baileys Chats
-
-Session must be paired first (`skills/baileys-pairing/SKILL.md`).
+Session must be paired first (`references/pairing.md`).
 
 ## Read a conversation
 

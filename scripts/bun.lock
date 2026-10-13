@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "baileys-skill-scripts",
+      "name": "whatsapp-skill-scripts",
       "dependencies": {
         "baileys": "7.0.0-rc14",
         "pino": "9.14.0",

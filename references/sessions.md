@@ -1,13 +1,4 @@
----
-name: baileys-admin
-description: Manage local WhatsApp sessions (list state, re-pair, delete) and Business commerce (catalog, products, orders) for the script skill. Use when the user says sesiones, estado, desvincular, borrar sesion, catalogo, producto, orden, or a session misbehaves.
-license: MIT
-metadata:
-  author: baileys-skill
-  version: "3.1"
----
-
-# Baileys Admin (local sessions)
+# WhatsApp Admin (local sessions)
 
 Sessions are folders, not server records. No HTTP involved.
 
@@ -69,4 +60,4 @@ Detail: `references/setup.md` (data layout) and `references/pairing.md` (errors)
 
 ## Incomplete login / Logging in
 
-Offline `status.mjs` only reports stored credentials. Never equate `registered: true` with a completed phone login. For `Logging in...`, follow `skills/baileys-pairing/SKILL.md` and `references/pairing.md`: bounded `--resume` first, no automatic code rotation, explicit `--reset` only for the failed session after cancelling the pending phone attempt. Reset archives credentials instead of deleting them.
+Offline `status.mjs` only reports stored credentials. Never equate `registered: true` with a completed phone login. For `Logging in...`, follow `references/pairing.md` and `references/pairing.md`: bounded `--resume` first, no automatic code rotation, explicit `--reset` only for the failed session after cancelling the pending phone attempt. Reset archives credentials instead of deleting them.

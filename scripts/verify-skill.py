@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify-skill.py — validate the baileys-skill skill pack (scripts-only, no HTTP/MCP server)."""
+"""Validate the single-entrypoint whatsapp-skill package and its references."""
 import re
 import sys
 from pathlib import Path
@@ -47,8 +47,7 @@ def check_skill(skill_md: Path, root_name: str | None = None):
         ok(f"{rel}: name={name}")
     if len(name) > 64 or len(name) < 1:
         fail(f"{rel}: name must be 1-64 chars")
-    # Repository checkouts may be named whatsapp-skill or unpacked as an archive.
-    # Installed sub-skills must still match their frontmatter names.
+    # Source checkout/archive names may vary; the installer names the installed root.
     if skill_md.parent.name != name and skill_md != ROOT / "SKILL.md":
         fail(f"{rel}: directory {skill_md.parent.name!r} must match skill name {name!r}")
     else:
@@ -65,18 +64,19 @@ def check_skill(skill_md: Path, root_name: str | None = None):
     return name, desc, body
 
 def main():
-    subs = sorted((ROOT / "skills").glob("*/SKILL.md")) if (ROOT / "skills").exists() else []
     if not (ROOT / "SKILL.md").exists():
         fail("SKILL.md missing at skill root")
         return 1
     root = check_skill(ROOT / "SKILL.md")
     if root:
-        _, desc, body = root
+        name, desc, body = root
+        if name != "whatsapp-skill":
+            fail("root name must be whatsapp-skill")
         for kw in ("whatsapp", "pair", "send"):
             if kw not in desc.lower() and kw not in body.lower():
                 fail(f"root SKILL.md missing keyword {kw!r}")
-        for phrase in ("bun install", "pair.mjs --phone", "skills/baileys-pairing/SKILL.md",
-                       "skills/baileys-setup/SKILL.md", "references/scripts-reference.md"):
+        for phrase in ("bun install", "pair.mjs --phone", "references/pairing.md",
+                       "references/setup.md", "references/scripts-reference.md"):
             if phrase not in body:
                 fail(f"root SKILL.md missing required phrase: {phrase}")
         ok("root required phrases present" if not FAIL else "root phrase check done")
@@ -89,14 +89,21 @@ def main():
         else:
             ok("pairing order: number -> code")
 
-    if len(subs) < 6:
-        fail(f"expected >= 6 sub-skills in skills/, found {len(subs)}")
+    import os
+    entries = []
+    for directory, directories, files in os.walk(ROOT, followlinks=False):
+        directories[:] = [name for name in directories if name not in {"data", "node_modules", ".git", "__pycache__"}]
+        entries.extend(Path(directory) / name for name in files if name in {"SKILL.md", "SKILLS.md"})
+    if entries != [ROOT / "SKILL.md"]:
+        fail("package must contain exactly one SKILL.md, at the root, and no SKILLS.md")
     else:
-        ok(f"sub-skills found: {len(subs)}")
-    for sm in subs:
-        check_skill(sm)
+        ok("one central skill entrypoint")
+    for document in re.findall(r"references/[a-z0-9-]+\.md", root[2] if root else ""):
+        if not (ROOT / document).is_file():
+            fail(f"router references a missing document: {document}")
 
-    for rel in ["references/setup.md", "references/pairing.md",
+    for rel in ["references/setup.md", "references/pairing.md", "references/messages.md",
+                "references/groups.md", "references/contacts.md", "references/chats.md", "references/sessions.md",
                 "references/scripts-reference.md", "assets/user-link-steps.md",
                 "scripts/package.json", "scripts/lib/session.mjs", "scripts/lib/args.mjs",
                 "scripts/pair.mjs", "scripts/lib/pairing.mjs", "scripts/lib/pair-lock.mjs",
@@ -129,7 +136,7 @@ def main():
         "qrcode-terminal": ["scripts/package.json"],
         "Bun.serve": ["scripts/*.mjs", "scripts/lib/*.mjs"],
         "from 'express'": ["scripts/*.mjs", "scripts/lib/*.mjs"],
-        "curl ": ["SKILL.md", "skills/*/SKILL.md", "references/*.md", "scripts/*.mjs"],
+        "curl ": ["SKILL.md", "references/*.md", "scripts/*.mjs"],
     }
     import glob as _glob
     for needle, patterns in banned.items():

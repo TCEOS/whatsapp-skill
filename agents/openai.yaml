@@ -1,0 +1,3 @@
+interface:
+  display_name: "WhatsApp Skill"
+  short_description: "Read, search and send WhatsApp messages locally"

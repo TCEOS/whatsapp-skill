@@ -1,8 +1,8 @@
 {
-	"name": "baileys-skill-scripts",
+	"name": "whatsapp-skill-scripts",
 	"private": true,
-	"version": "0.1.0",
-	"description": "Runtime dependencies for the baileys-skill Agent Skill scripts (direct Baileys, no HTTP, no server)",
+	"version": "0.2.0",
+	"description": "Runtime dependencies for WhatsApp Skill scripts using Baileys",
 	"type": "module",
 	"dependencies": {
 		"baileys": "7.0.0-rc14",
